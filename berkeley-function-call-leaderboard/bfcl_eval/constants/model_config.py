@@ -2054,6 +2054,18 @@ third_party_inference_model_map = {
         is_fc_model=True,
         underscore_to_dot=True,
     ),
+    "LiquidAI/LFM2-1.2B": ModelConfig(
+        model_name="lfm2_1b",
+        display_name="LFM2-1.2B",
+        url="https://huggingface.co/LiquidAI/LFM2-1.2B",
+        org="Liquid",
+        license="apache-2.0",
+        model_handler=LiquidHandler,
+        input_price=None,
+        output_price=None,
+        is_fc_model=False,
+        underscore_to_dot=False,
+    ),
 }
 
 
