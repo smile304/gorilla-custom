@@ -2060,11 +2060,11 @@ third_party_inference_model_map = {
         url="https://huggingface.co/LiquidAI/LFM2-1.2B",
         org="Liquid",
         license="apache-2.0",
-        model_handler=LiquidHandler,
+        model_handler=LiquidFCHandler,
         input_price=None,
         output_price=None,
-        is_fc_model=False,
-        underscore_to_dot=False,
+        is_fc_model=True,
+        underscore_to_dot=True,
     ),
 }
 
