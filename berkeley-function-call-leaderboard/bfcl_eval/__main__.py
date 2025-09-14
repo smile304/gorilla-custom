@@ -108,6 +108,14 @@ def generate(
     temperature: float = typer.Option(
         0.001, help="The temperature parameter for the model."
     ),
+    min_p: float = typer.Option(
+        0.0, help="The min_p parameter for the model."
+    ),
+    include_special_tokens: bool = typer.Option(
+        False, 
+        "--include-special-tokens",
+        help="The include_special_tokens parameter for the model."
+    ),
     include_input_log: bool = typer.Option(
         False,
         "--include-input-log",
@@ -157,6 +165,8 @@ def generate(
         model=model,
         test_category=test_category,
         temperature=temperature,
+        min_p=min_p,
+        skip_special_tokens=not include_special_tokens,
         include_input_log=include_input_log,
         exclude_state_log=exclude_state_log,
         num_gpus=num_gpus,
