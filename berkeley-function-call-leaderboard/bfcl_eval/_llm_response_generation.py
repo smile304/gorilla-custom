@@ -62,9 +62,10 @@ def get_args():
     return args
 
 
-def build_handler(model_name, temperature):
+def build_handler(model_name, temperature, min_p=None):
     config = MODEL_CONFIG_MAPPING[model_name]
     handler = config.model_handler(model_name, temperature)
+    handler.min_p = min_p
     # Propagate config flags to the handler instance
     handler.is_fc_model = config.is_fc_model
     return handler
@@ -199,7 +200,10 @@ def multi_threaded_inference(handler, test_case, include_input_log, exclude_stat
 
 
 def generate_results(args, model_name, test_cases_total):
-    handler = build_handler(model_name, args.temperature)
+    try:
+        handler = build_handler(model_name, args.temperature, args.min_p)
+    except Exception:
+        handler = build_handler(model_name, args.temperature)
     num_threads = args.num_threads
 
     if isinstance(handler, OSSHandler):
