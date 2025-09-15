@@ -64,6 +64,7 @@ from bfcl_eval.model_handler.local_inference.salesforce_qwen import (
 )
 from bfcl_eval.model_handler.local_inference.think_agent import ThinkAgentHandler
 from bfcl_eval.model_handler.local_inference.liquid import LiquidFCHandler
+from bfcl_eval.model_handler.api_inference.liquid_api import LiquidFCAPIHandler
 
 # -----------------------------------------------------------------------------
 # A mapping of model identifiers to their respective model configurations.
@@ -1108,6 +1109,18 @@ api_inference_model_map = {
         output_price=None,
         is_fc_model=False,
         underscore_to_dot=False,
+    ),
+    "liquid-api-FC": ModelConfig(
+        model_name="liquid-api-FC",
+        display_name="Liquid-API (FC)",
+        url="https://huggingface.co/LiquidAI",
+        org="Liquid",
+        license="MIT",
+        model_handler=LiquidFCAPIHandler,
+        input_price=None,
+        output_price=None,
+        is_fc_model=True,
+        underscore_to_dot=True,
     ),
 }
 
