@@ -19,8 +19,8 @@ from openai import OpenAI, RateLimitError
 
 
 class OpenAICompletionsHandler(BaseHandler):
-    def __init__(self, model_name, temperature) -> None:
-        super().__init__(model_name, temperature)
+    def __init__(self, model_name, temperature, min_p=0.0) -> None:
+        super().__init__(model_name, temperature, min_p)
         self.model_style = ModelStyle.OPENAI_COMPLETIONS
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -44,6 +44,11 @@ class OpenAICompletionsHandler(BaseHandler):
     @retry_with_backoff(error_type=RateLimitError)
     def generate_with_backoff(self, **kwargs):
         start_time = time.time()
+        extra_body = {}
+        if "min_p" in kwargs:
+            extra_body["min_p"] = kwargs.pop("min_p")
+        if extra_body:
+            kwargs["extra_body"] = extra_body
         api_response = self.client.chat.completions.create(**kwargs)
         end_time = time.time()
 
