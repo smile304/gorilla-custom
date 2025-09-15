@@ -96,6 +96,7 @@ SUPPORTED_MODELS = [
     "glm-4.5-air-FC",
     "kimi-k2-0711-preview-FC",
     "kimi-k2-0711-preview",
+    "liquid-api-FC",
     "deepseek-ai/DeepSeek-R1",
     "google/gemma-3-1b-it",
     "google/gemma-3-4b-it",
