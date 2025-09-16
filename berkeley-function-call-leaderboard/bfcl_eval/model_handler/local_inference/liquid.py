@@ -22,8 +22,8 @@ class LiquidFCHandler(OSSHandler):
       <|tool_call_start|>{"name": "<tool-name>", "arguments": {...}}<|tool_call_end|>
     """
 
-    def __init__(self, model_name, temperature) -> None:
-        super().__init__(model_name, temperature)
+    def __init__(self, model_name, temperature, min_p=0.0, repetition_penalty=1.0):
+        super().__init__(model_name, temperature, min_p, repetition_penalty)
         self.is_fc_model = False
 
     # ----------------------------
