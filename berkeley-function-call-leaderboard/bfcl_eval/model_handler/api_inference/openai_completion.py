@@ -19,8 +19,8 @@ from openai import OpenAI, RateLimitError
 
 
 class OpenAICompletionsHandler(BaseHandler):
-    def __init__(self, model_name, temperature, min_p=0.0) -> None:
-        super().__init__(model_name, temperature, min_p)
+    def __init__(self, model_name, temperature, min_p=0.0, repetition_penalty=1.0) -> None:
+        super().__init__(model_name, temperature, min_p, repetition_penalty)
         self.model_style = ModelStyle.OPENAI_COMPLETIONS
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -47,6 +47,8 @@ class OpenAICompletionsHandler(BaseHandler):
         extra_body = {}
         if "min_p" in kwargs:
             extra_body["min_p"] = kwargs.pop("min_p")
+        if "repetition_penalty" in kwargs:
+            extra_body["repetition_penalty"] = kwargs.pop("repetition_penalty")
         if extra_body:
             kwargs["extra_body"] = extra_body
         api_response = self.client.chat.completions.create(**kwargs)
