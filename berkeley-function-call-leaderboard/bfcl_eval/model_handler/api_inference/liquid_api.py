@@ -22,10 +22,11 @@ class LiquidFCAPIHandler(OpenAICompletionsHandler):
     def __init__(self, model_name, temperature, min_p=0.0, repetition_penalty=1.0):
         super().__init__(model_name, temperature, min_p, repetition_penalty)
         self.model_style = ModelStyle.OPENAI_COMPLETIONS
+        port = os.getenv("PORT", 8000)
 
         # Configure OpenAI client - adjust base_url and api_key as needed
         self.client = OpenAI(
-            base_url=os.getenv("LIQUID_API_BASE_URL", "http://localhost:8000/v1"),
+            base_url=os.getenv("LIQUID_API_BASE_URL", f"http://localhost:{port}/v1"),
             api_key=os.getenv("LIQUID_API_KEY", "none"),
         )
 
