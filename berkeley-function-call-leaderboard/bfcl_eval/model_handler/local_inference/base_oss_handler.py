@@ -20,12 +20,13 @@ from overrides import EnforceOverrides, final, override
 
 
 class OSSHandler(BaseHandler, EnforceOverrides):
-    def __init__(self, model_name, temperature, dtype="bfloat16", min_p=None) -> None:
+    def __init__(self, model_name, temperature, dtype="bfloat16", min_p=None, repetition_penalty=None) -> None:
         super().__init__(model_name, temperature)
         self.model_name_huggingface = model_name
         self.model_style = ModelStyle.OSSMODEL
         self.dtype = dtype
         self.min_p = min_p
+        self.repetition_penalty = repetition_penalty
 
         # Will be overridden in batch_inference method
         # Used to indicate where the tokenizer and config should be loaded from
@@ -299,6 +300,8 @@ class OSSHandler(BaseHandler, EnforceOverrides):
             extra_body["skip_special_tokens"] = self.skip_special_tokens
         if hasattr(self, "min_p"):
             extra_body["min_p"] = self.min_p
+        if hasattr(self, "repetition_penalty"):
+            extra_body["repetition_penalty"] = self.repetition_penalty
 
         start_time = time.time()
         if len(extra_body) > 0:
