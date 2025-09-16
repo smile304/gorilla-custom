@@ -32,7 +32,7 @@ class BaseHandler:
     model_name: str
     model_style: ModelStyle
 
-    def __init__(self, model_name, temperature, min_p=0.0) -> None:
+    def __init__(self, model_name, temperature, min_p=0.0, repetition_penalty=1.0) -> None:
         self.model_name = model_name
         # Replace the slash with underscore to avoid creating subdirectories
         # Replace the dash and dot with underscore for valid variable name
@@ -43,6 +43,7 @@ class BaseHandler:
         self.model_name_dir = model_name.replace("/", "_")
         self.temperature = temperature  
         self.min_p = min_p
+        self.repetition_penalty = repetition_penalty
         self.is_fc_model = False  # Whether the model is a function calling model
 
     def inference(
