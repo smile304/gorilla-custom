@@ -19,8 +19,8 @@ class LiquidFCAPIHandler(OpenAICompletionsHandler):
     - Tool calls expected in format: <|tool_call_start|>[func_name(args)]<|tool_call_end|>
     """
 
-    def __init__(self, model_name, temperature, min_p=0.0) -> None:
-        super().__init__(model_name, temperature, min_p)
+    def __init__(self, model_name, temperature, min_p=0.0, repetition_penalty=1.0):
+        super().__init__(model_name, temperature, min_p, repetition_penalty)
         self.model_style = ModelStyle.OPENAI_COMPLETIONS
 
         # Configure OpenAI client - adjust base_url and api_key as needed
