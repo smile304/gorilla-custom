@@ -156,6 +156,9 @@ def generate(
         "--run-ids",
         help="If true, also run the test entry mentioned in the test_case_ids_to_generate.json file, in addition to the --test_category argument.",
     ),
+    repetition_penalty: float = typer.Option(
+        1.0, help="The repetition_penalty parameter for the model."
+    ),
 ):
     """
     Generate the LLM response for one or more models on a test-category (same as openfunctions_evaluation.py).
@@ -166,6 +169,7 @@ def generate(
         test_category=test_category,
         temperature=temperature,
         min_p=min_p,
+        repetition_penalty=repetition_penalty,
         skip_special_tokens=not include_special_tokens,
         include_input_log=include_input_log,
         exclude_state_log=exclude_state_log,
