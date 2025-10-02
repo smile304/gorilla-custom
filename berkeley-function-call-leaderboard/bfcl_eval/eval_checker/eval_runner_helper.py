@@ -288,7 +288,7 @@ def write_score_csv_file(
 
 def write_score_json_file(
     data,
-    file_path: str,
+    file_path: str, # ~/autoeval/evals/{model_name}/bfcl.json
     header: list,
     sort_column_index: int,
     no_conversion_numeric_column_index: list[int] = [],
@@ -343,28 +343,12 @@ def write_score_json_file(
     with open(file_path, "w") as f:
         json.dump(json_data, f, indent=2, ensure_ascii=False)
 
-def _write_latest_json(output_path: Path, model_snapshot: dict) -> None:
-    latest_payload = {
-        "generated_at": datetime.utcnow().isoformat() + "Z",
-        "models": [model_snapshot],  # single model only
-    }
-    with open(output_path / "latest.json", "w") as f:
-        json.dump(latest_payload, f, indent=2, ensure_ascii=False)
-
 def generate_leaderboard_csv(
     leaderboard_table,
     output_path,
     current_model_name: str | None = None,   # optional override
 ):
     print("📈 Aggregating data to generate leaderboard score table...")
-
-    def _write_latest_json(model_snapshot: dict) -> None:
-        payload = {
-            "generated_at": datetime.utcnow().isoformat() + "Z",
-            "models": [model_snapshot],  # single model only
-        }
-        with open(output_path / "latest.json", "w") as f:
-            json.dump(payload, f, indent=2, ensure_ascii=False)
 
     all_format_configs = get_all_format_sensitivity_configs()
 
@@ -632,22 +616,22 @@ def generate_leaderboard_csv(
         name_variants_map[model_name_escaped] = _variants(model_name_escaped)
 
     # -------------------- write all files as before --------------------
-    write_score_csv_file(data=data_non_live, file_path=output_path / "data_non_live.csv",
-                         header=COLUMNS_NON_LIVE, sort_column_index=2)
-    write_score_csv_file(data=data_live, file_path=output_path / "data_live.csv",
-                         header=COLUMNS_LIVE, sort_column_index=2)
-    write_score_csv_file(data=data_multi_turn, file_path=output_path / "data_multi_turn.csv",
-                         header=COLUMNS_MULTI_TURN, sort_column_index=2)
-    COLUMNS_FORMAT_SENS = COLUMNS_FORMAT_SENS_PREFIX + [f"Config {cfg}" for cfg in all_format_configs]
-    write_score_csv_file(data=data_format_sensitivity, file_path=output_path / "data_format_sensitivity.csv",
-                         header=COLUMNS_FORMAT_SENS, sort_column_index=2, no_conversion_numeric_column_index=[2, 3])
-    write_score_csv_file(data=data_combined, file_path=output_path / "data_overall.csv",
-                         header=COLUMNS_OVERALL, sort_column_index=1,
-                         no_conversion_numeric_column_index=[4, 5, 6, 7, 32, 33])
-    print("📄 Generating JSON version of overall data...")
-    write_score_json_file(data=data_combined, file_path=output_path / "data_overall.json",
-                          header=COLUMNS_OVERALL, sort_column_index=1,
-                          no_conversion_numeric_column_index=[4, 5, 6, 7, 32, 33])
+    # write_score_csv_file(data=data_non_live, file_path=output_path / "data_non_live.csv",
+    #                      header=COLUMNS_NON_LIVE, sort_column_index=2)
+    # write_score_csv_file(data=data_live, file_path=output_path / "data_live.csv",
+    #                      header=COLUMNS_LIVE, sort_column_index=2)
+    # write_score_csv_file(data=data_multi_turn, file_path=output_path / "data_multi_turn.csv",
+    #                      header=COLUMNS_MULTI_TURN, sort_column_index=2)
+    # COLUMNS_FORMAT_SENS = COLUMNS_FORMAT_SENS_PREFIX + [f"Config {cfg}" for cfg in all_format_configs]
+    # write_score_csv_file(data=data_format_sensitivity, file_path=output_path / "data_format_sensitivity.csv",
+    #                      header=COLUMNS_FORMAT_SENS, sort_column_index=2, no_conversion_numeric_column_index=[2, 3])
+    # write_score_csv_file(data=data_combined, file_path=output_path / "data_overall.csv",
+    #                      header=COLUMNS_OVERALL, sort_column_index=1,
+    #                      no_conversion_numeric_column_index=[4, 5, 6, 7, 32, 33])
+    # print("📄 Generating JSON version of overall data...")
+    # write_score_json_file(data=data_combined, file_path=output_path / "data_overall.json",
+    #                       header=COLUMNS_OVERALL, sort_column_index=1,
+    #                       no_conversion_numeric_column_index=[4, 5, 6, 7, 32, 33])
 
     # -------------------- decide which model is "current" --------------------
     # 1) If caller passed a current_model_name, prefer that (robust to separators).
@@ -674,7 +658,18 @@ def generate_leaderboard_csv(
 
     # 3) Fallback: if still nothing, do nothing (but don’t break)
     if chosen_key and chosen_key in model_snapshots:
-        _write_latest_json(model_snapshots[chosen_key])
+        model_snapshot = model_snapshots[chosen_key]
+
+        payload = {
+            "eval_name": "bfclv4",
+            "final_score": model_snapshot["accuracy"]["overall"],
+            "date": datetime.now().isoformat(),
+            "max_length": 32768,
+            "models": [model_snapshot],  # single model only
+        }
+        with open(f"/home/maxime/autoeval/bfclv4.json", "w") as f:
+            json.dump(payload, f, indent=2, ensure_ascii=False)
+        print(f"✅ Exported results to /home/maxime/autoeval/bfclv4.json")
 
     # -------------------- W&B logging (unchanged) --------------------
     wandb_project = os.getenv("WANDB_BFCL_PROJECT")
